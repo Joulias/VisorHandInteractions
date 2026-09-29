@@ -97,15 +97,6 @@ Existing version 1 files are migrated automatically, preserving current choices 
 
 A held grab remains attached after the probe leaves a thin collision shape, allowing a full pull or turn. It cancels safely when tracking is lost, a menu or overlay interrupts world interaction, the target becomes invalid, or the VR/client session ends.
 
-## Building
-
-The checked-in `gradle.properties` points at this workspace's local Visor snapshot #4 and optional-mod jars. For another checkout, override the paths with `-Plocal_visor_fabric_jar=<path>`, `-Plocal_visor_neoforge_jar=<path>`, and the corresponding `-Plocal_*_neoforge_jar=<path>` properties for Create, Aeronautics (`aero`), Sable, and Aeroworks. `VISOR_FABRIC_JAR` and `VISOR_NEOFORGE_JAR` are fallbacks only when their Gradle properties are absent.
-
-```powershell
-.\gradlew.bat :mod-core:contactGeometryTest :mod-core:grabPoseFrameTest :mod-core:controlDirectionTest build --rerun-tasks --no-daemon
-```
-
-Use a Java 21 JDK. Finished jars are written to `mod-fabric/build/libs` and `mod-forge/build/libs`. Optional compatibility dependencies are compile-only and are not bundled into either output.
 
 ## Known limits
 
