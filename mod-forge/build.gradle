@@ -1,0 +1,107 @@
+plugins {
+    alias(libs.plugins.shadow)
+}
+
+architectury {
+    platformSetupLoomIde()
+    neoForge {
+        platformPackage = 'neoforge'
+    }
+}
+
+configurations {
+    common
+    shadowCommon
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentNeoForge.extendsFrom common
+}
+
+version = "${rootProject.version}-NeoForge-${libs.versions.minecraftVersion.get()}"
+
+dependencies {
+    compileOnly(files(rootProject.ext.resolveVisorNeoForgeJar.call()))
+
+    def localCreateJar = rootProject.file(rootProject.local_create_neoforge_jar)
+    if (!localCreateJar.exists()) {
+        throw new GradleException("Missing local Create NeoForge compile dependency: ${localCreateJar}")
+    }
+    modCompileOnly(files(localCreateJar))
+
+    // Create provides Catnip through its nested Ponder jar at runtime.
+    def localPonderJar = zipTree(localCreateJar).matching {
+        include 'META-INF/jarjar/ponder-neoforge-*.jar'
+    }.singleFile
+    compileOnly(files(localPonderJar))
+
+    def localAeroBundle = rootProject.file(rootProject.local_aero_neoforge_jar)
+    if (!localAeroBundle.exists()) {
+        throw new GradleException("Missing local Aeronautics compile dependency: ${localAeroBundle}")
+    }
+    def localSimulatedJar = zipTree(localAeroBundle).matching {
+        include 'META-INF/jarjar/dev.simulated_team.simulated.simulated-neoforge-1.21.1-1.3.0.jar'
+    }.singleFile
+    modCompileOnly(files(localSimulatedJar))
+
+    def localSableJar = rootProject.file(rootProject.local_sable_neoforge_jar)
+    if (!localSableJar.exists()) {
+        throw new GradleException("Missing local Sable compile dependency: ${localSableJar}")
+    }
+    def localSableCompanionJar = zipTree(localSableJar).matching {
+        include 'META-INF/jarjar/sable-companion-common-1.21.1-1.6.0.jar'
+    }.singleFile
+    compileOnly(files(localSableCompanionJar))
+
+    // Optional compatibility jars are compile-only. Create, Simulated, and
+    // Sable continue to supply their own code and nested dependencies at runtime.
+    modCompileOnly(files(localSableJar))
+
+    def localAeroworksJar = rootProject.file(rootProject.local_aeroworks_neoforge_jar)
+    if (!localAeroworksJar.exists()) {
+        throw new GradleException(
+                "Missing local Aeroworks compile dependency: ${localAeroworksJar}"
+        )
+    }
+    modCompileOnly(files(localAeroworksJar))
+
+    shadowCommon(project(path: ':mod-core', configuration: 'transformProductionNeoForge')) { transitive = false }
+    common(project(path: ':mod-core', configuration: 'namedElements')) { transitive = false }
+
+    neoForge "net.neoforged:neoforge:${libs.versions.neoforgeVersion.get()}"
+}
+
+processResources {
+    inputs.property 'version', parent.version
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand 'version': parent.version
+    }
+}
+
+shadowJar {
+    exclude 'architectury.common.json'
+    exclude 'org.joml'
+    exclude 'org.lwjgl'
+    exclude 'org.slf4j'
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+    configurations = [project.configurations.shadowCommon]
+    archiveClassifier.set('dev-shadow')
+}
+
+remapJar {
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+    archiveClassifier.set('')
+}
+
+sourcesJar {
+    def commonSources = project(':mod-core').sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
+    }
+}
+

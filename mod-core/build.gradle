@@ -1,0 +1,44 @@
+architectury {
+    common(rootProject.enabled_platforms.split(','))
+}
+
+dependencies {
+    compileOnly(libs.mixin)
+    annotationProcessor(libs.mixin)
+    compileOnly(libs.fabric.loader)
+    compileOnly(libs.architectury.lib)
+
+    // The cached unofficial snapshot is already in named mappings. Plain
+    // compileOnly avoids remapping it a second time and never bundles Visor.
+    compileOnly(files(rootProject.ext.resolveVisorFabricJar.call()))
+}
+
+tasks.register('contactGeometryTest', JavaExec) {
+    group = 'verification'
+    description = 'Runs dependency-free swept-sphere geometry regression checks.'
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass.set(
+            'org.vmstudio.visorhandinteractions.core.client.interaction.ContactGeometrySelfTest'
+    )
+}
+
+tasks.register('grabPoseFrameTest', JavaExec) {
+    group = 'verification'
+    description = 'Runs lever/wheel hand-lock frame regression checks.'
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass.set(
+            'org.vmstudio.visorhandinteractions.core.client.pose.GrabPoseFrameSelfTest'
+    )
+}
+
+tasks.register('controlDirectionTest', JavaExec) {
+    group = 'verification'
+    description = 'Runs physical detent direction regression checks.'
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass.set(
+            'org.vmstudio.visorhandinteractions.core.client.interaction.generic.ControlDirectionSelfTest'
+    )
+}

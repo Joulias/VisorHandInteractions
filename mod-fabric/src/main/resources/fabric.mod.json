@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "visor_hand_interactions",
+  "version": "${version}",
+  "name": "Visor Hand Interactions",
+  "description": "Physical hand-touch, grab, and VR menu interactions for Create-family controls in Visor VR.",
+  "authors": ["Joulias"],
+  "license": "LGPL-3.0-or-later",
+  "environment": "client",
+  "entrypoints": {
+    "main": [
+      "org.vmstudio.visorhandinteractions.loader.fabric.VisorHandInteractionsMod"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "fabric-api": ">=0.116.13",
+    "minecraft": "1.21.1",
+    "java": ">=21",
+    "visor": "0.5.0-snapshot#4"
+  }
+}

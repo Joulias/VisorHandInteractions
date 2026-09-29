@@ -1,0 +1,65 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "LGPL-3.0-or-later"
+
+[[mods]]
+modId = "visor_hand_interactions"
+version = "${version}"
+displayName = "Visor Hand Interactions"
+authors = "Joulias"
+description = '''
+Physical hand-touch, dedicated grab, and VR menu interactions for Create-family controls in Visor VR.
+'''
+
+[[dependencies.visor_hand_interactions]]
+modId = "visor"
+type = "required"
+versionRange = "[0.5.0-snapshot#4,0.6.0)"
+ordering = "AFTER"
+side = "CLIENT"
+
+[[dependencies.visor_hand_interactions]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21.1.234,)"
+ordering = "AFTER"
+side = "CLIENT"
+
+[[dependencies.visor_hand_interactions]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21.1]"
+ordering = "AFTER"
+side = "CLIENT"
+
+[[dependencies.visor_hand_interactions]]
+modId = "create"
+type = "optional"
+versionRange = "[6.0.10,6.1.0)"
+ordering = "AFTER"
+side = "CLIENT"
+
+[[dependencies.visor_hand_interactions]]
+modId = "simulated"
+type = "optional"
+versionRange = "[1.3.0,1.4.0)"
+ordering = "AFTER"
+side = "CLIENT"
+
+[[dependencies.visor_hand_interactions]]
+modId = "sable"
+type = "optional"
+versionRange = "[2.0.3,3.0.0)"
+ordering = "AFTER"
+side = "CLIENT"
+
+[[dependencies.visor_hand_interactions]]
+modId = "aeroworks"
+type = "optional"
+versionRange = "[1.4.0,1.5.0)"
+ordering = "AFTER"
+side = "CLIENT"
+
+[[mixins]]
+config = "visor_hand_interactions.neoforge.mixins.json"
+

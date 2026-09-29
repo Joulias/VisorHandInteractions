@@ -1,0 +1,64 @@
+plugins {
+    alias(libs.plugins.shadow)
+}
+
+architectury {
+    platformSetupLoomIde()
+    fabric()
+}
+
+configurations {
+    common
+    shadowCommon
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
+}
+
+version = "${rootProject.version}-Fabric-${libs.versions.minecraftVersion.get()}"
+
+dependencies {
+    compileOnly(files(rootProject.ext.resolveVisorFabricJar.call()))
+
+    shadowCommon(project(path: ':mod-core', configuration: 'transformProductionFabric')) { transitive = false }
+    common(project(path: ':mod-core', configuration: 'namedElements')) { transitive = false }
+
+    String fabricApiVersion = "${libs.versions.fabric.api.get()}+${libs.versions.minecraftVersion.get()}"
+    modImplementation(libs.fabric.loader)
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${fabricApiVersion}")
+}
+
+processResources {
+    inputs.property 'version', parent.version
+    filesMatching('fabric.mod.json') {
+        expand 'version': parent.version
+    }
+}
+
+shadowJar {
+    exclude 'architectury.common.json'
+    exclude 'org.joml'
+    exclude 'org.lwjgl'
+    exclude 'org.slf4j'
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+    configurations = [project.configurations.shadowCommon]
+    archiveClassifier.set('dev-shadow')
+}
+
+remapJar {
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+    archiveClassifier.set('')
+}
+
+sourcesJar {
+    def commonSources = project(':mod-core').sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
+    }
+}

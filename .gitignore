@@ -1,0 +1,30 @@
+.gradle/
+build/
+**/build/
+.architectury-transformer/
+**/.architectury-transformer/
+**/.mixin.out/
+run/
+**/run/
+**/logs/
+**/crash-reports/
+*.log
+
+# Local dependencies and generated binaries (keep the Gradle wrapper).
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# Local credentials and machine-specific configuration.
+.env
+.env.*
+!.env.example
+local.properties
+
+# Editor and operating-system files.
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini

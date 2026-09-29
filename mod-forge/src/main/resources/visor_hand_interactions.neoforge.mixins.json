@@ -1,0 +1,12 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "org.vmstudio.visorhandinteractions.loader.neoforge.compat.create.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ControlsHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
